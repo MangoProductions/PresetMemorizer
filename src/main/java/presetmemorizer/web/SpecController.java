@@ -37,7 +37,7 @@ public class SpecController {
 	// lisäyslomake /add
 	@PostMapping("/add")
 	public String postSpec(String name, String arpseqrate, String arpseqgate, String arpseqoct, String arpseqpat, String argseqstl, String lfo1wave, String lfo2wave, String lfo1delay, String lfo2delay, String lfo1rate, String lfo2rate, String osc1wave, String osc1ptchmod, String osc1pwm, String osc2ptchmod, String osc2tonemod, String osc2ptch, String osc2lvl, String osc2sync, String noiselvl, String oct, String voc, String cat) {
-		// luodaan kirjaolio string-muuttujista
+		// olio string-muuttujista
 		Optional<Category> katsu = catrep.findById(Long.parseLong(cat));
 		Category uusiKatsu = katsu.get();
 		Spec newspec = new Spec(name, arpseqrate, arpseqgate, arpseqoct, arpseqpat, argseqstl, lfo1wave, lfo2wave, lfo1delay, lfo2delay, lfo1rate, lfo2rate, osc1wave, osc1ptchmod, osc1pwm, osc2ptchmod, osc2tonemod, osc2ptch, osc2lvl, osc2sync, noiselvl, oct, voc, uusiKatsu);

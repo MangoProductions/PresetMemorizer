@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<!-- CSS only -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+	crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/7e7cff31ed.js"
+	crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
+<style>
+td {
+	padding: .5em;
+}
+.table {
+background-color: rgba(25, 0, 97, 0.3);
+
+}
+.table-striped {
+background-color: rgba(25, 33, 97, 0.3);}
+body {
+	width: 88%;
+	margin: 0 auto;
+	  background-color: rgb(35, 35, 55);
+	  color: #fff;
+	  
+}
+.poista {
+	display: inline-block;
+	background-color: red;
+	color: #fff;
+	border-radius: 1em;
+	padding: 0 .3em;
+	text-decoration: none;
+	min-width: 2em;
+	text-align: center;
+}
+
+.muokkaa {
+	display: inline-block;
+	background-color: green;
+	color: #fff;
+	border-radius: 1em;
+	padding: 0 .3em;
+	text-decoration: none;
+	min-width: 2em;
+	text-align: center;
+}
+.collapsible, .collapsurvey {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  border-radius: 10px 10px 0px 0px;
+}
+.formfancy {
+  background-color: rgba(0, 0, 255, 0.3);
+  border-radius: 14px;
+display: table
+}
+
+.active, .collapsurvey:hover, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.33s ease-out;
+	border-bottom: 1px solid black;
+	
+}
+.muokkaa:hover, .poista:hover {
+	color: #fff;
+	cursor: pointer;
+}
+input {
+  margin-bottom: 1px;}
+.btn{
+text-align:center;
+justify-content: center;
+margin-left: 3%;}
+span[contenteditable=true] {
+	font-family: monospace;
+	background: #fff3a4;
+	border-radius: 1em;
+	padding: 0 1em;
+	border: 1px dashed brown;
+}
+td{
+color: #FFF;
+text-shadow: 0px 0px 0.5em #0000ff;
+font-size: 1.1rem;
+}
+th{
+color: #5F3FF3;
+font-size: 2rem;
+}
+
+h1{
+text-align:center;
+justify-content: center;
+  width: 40%;
+color: #00d1fF;
+padding: 0.25em 1em;
+border: 0.125em solid currentColor;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+text-decoration: none;
+border-radius: 0.25em;
+  text-shadow: 0px 0px 0.2em #00d1fF;
+    text-shadow: 0px 0px 0.5em #fff;
+  box-shadow: 0px 0px 0.2em #00d1fF;
+  box-shadow: 0px 0px 0.5em #fff;
+
+}
+</style>
+<head>
+<title>Speclister 503</title>
+</head>
+<body><br><br><br>
+	<h1 th:inline="text">Preset Specification Bank</h1>
+
+	<table class="table table-striped">
+		<tr>
+			<th>Name</th> <br>
+			<th>Arpeggio settings</th><br>
+			<th>LFO settings</th><br>
+			<th>Oscillator Settings</th><br>
+			<th>Misc. Settings</th><br>
+			<th sec:authorize="hasAuthority('ADMIN')"><!-- Jäännös, joka saa jäädä --></th>
+		</tr>
+		<!-- Väli -->
+		<!-- Iteroidaan speccien läpi -->
+		<!-- Väli -->
+		<tr class="table" th:each="spec : ${specs}">
+			<td><span th:text="${spec.name}">1</span></td>
+					<!-- Arpeggio tiedot tänne -->
+			<td><button type="button" class="collapsible">Open Arpeggio Details</button>
+			<div class="content"><br>
+			Arpeggio Sequence Rate: <span th:text="${spec.arpseqrate}"
+				th:id="@{'arpseqrate' + ${spec.id}}" contenteditable="false">1</span>BPM <a
+				class="muokkaa" rel="arpseqrate" th:name="${spec.id}"> <i
+					class="far fa-edit"></i></a><br><br>
+			Arpeggio Sequence Gate: 
+			<span th:text="${spec.arpseqgate}"
+				th:id="@{'arpseqgate' + ${spec.id}}" contenteditable="false">1</span> <a
+				class="muokkaa" rel="arpseqgate" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+
+			Sequence Mode: <select th:id="@{'catlist' + ${spec.id}}"
+				class="form-control" style="display: none;">
+					<option value="" disabled="disabled" selected="selected">Choose
+						category...</option>
+					<option th:each="category: ${categories}"
+						th:value="${category.categoryid}" th:text="${category.name}"></option>
+			</select><span th:text="${spec.category.name}"
+				th:id="@{'category' + ${spec.id}}">1</span> <a
+				class="muokkaa spessu" rel="category" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+Arpeggio Sequence Octave: <span th:text="${spec.arpseqoct}" th:id="@{'arpseqoct' + ${spec.id}}"
+				contenteditable="false">1</span>Range <a class="muokkaa" rel="arpseqoct"
+				th:name="${spec.id}"> <i class="far fa-edit"></i></a><br><br>
+			 Arpeggio Sequence Pattern: <span th:text="${spec.arpseqpat}" th:id="@{'arpseqpat' + ${spec.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="arpseqpat"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+				Arpeggio Sequence Style: <span th:text="${spec.arpseqstl}" th:id="@{'arpseqstl' + ${spec.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="arpseqstl"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+
+				
+				
+				</div></td>
+				<!-- Väli -->
+				<!-- Low Frequency Oscillator tiedot tänne -->
+				<!-- Väli -->
+							<td><button type="button" class="collapsible">Open LFO Details</button>
+			<div class="content"><br>
+			LFO 1 Wave: <span th:text="${spec.lfo1wave}"
+				th:id="@{'lfo1wave' + ${spec.id}}" contenteditable="false">1</span> <a
+				class="muokkaa" rel="lfo1wave" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+			LFO 2 Wave: <span th:text="${spec.lfo2wave}" th:id="@{'lfo2wave' + ${spec.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="lfo2wave"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+			LFO 1 Delay: <span th:text="${spec.lfo1delay}"
+				th:id="@{'lfo1delay' + ${spec.id}}" contenteditable="false">1</span>Deciseconds <a
+				class="muokkaa" rel="lfo1delay" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+			LFO 2 Delay: <span th:text="${spec.lfo2delay}"
+				th:id="@{'lfo2delay' + ${spec.id}}" contenteditable="false">1</span>Deciseconds <a
+				class="muokkaa" rel="lfo2delay" th:name="${spec.id}"> <i
+					class="far fa-edit"></i></a><br><br>
+
+
+			LFO 1 Rate: <span th:text="${spec.lfo1rate}" th:id="@{'lfo1rate' + ${spec.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="lfo1rate"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+				LFO 2 Rate: <span th:text="${spec.lfo2rate}" th:id="@{'lfo2rate' + ${spec.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="lfo2rate"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+
+				
+				
+				</div></td>
+				<!-- Väli -->
+				<!-- Normi Oscillator tiedot tänne -->
+				<!-- Väli -->
+				<td><button type="button" class="collapsible">Open Oscillator Details</button>
+			<div class="content"><br>
+			Oscillator 1 Wave: <span th:text="${spec.osc1wave}"
+				th:id="@{'osc1wave' + ${spec.id}}" contenteditable="false">1</span> <a
+				class="muokkaa" rel="osc1wave" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+		Oscillator 1 Pitch Modulation: 	<span th:text="${spec.osc1ptchmod}" th:id="@{'osc1ptchmod' + ${spec.id}}"
+				contenteditable="false">1</span>Cents <a class="muokkaa" rel="osc1ptchmod"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+			Oscillator 1 PWM: <span th:text="${spec.osc1pwm}"
+				th:id="@{'osc1pwm' + ${spec.id}}" contenteditable="false">1</span> <a
+				class="muokkaa" rel="osc1pwm" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+			Oscillator 2 Pitch Modulation: <span th:text="${spec.osc2ptchmod}"
+				th:id="@{'osc2ptchmod' + ${spec.id}}" contenteditable="false">1</span>Cents <a
+				class="muokkaa" rel="osc2ptchmod" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+			Oscillator 2 Tone Modulation: <span th:text="${spec.osc2tonemod}" th:id="@{'osc2tonemod' + ${spec.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="osc2tonemod"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+				Oscillator 2 Pitch: <span th:text="${spec.osc2ptch}" th:id="@{'osc2ptch' + ${spec.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="osc2ptch"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+				Oscillator 2 Volume Level: <span th:text="${spec.osc2lvl}" th:id="@{'osc2lvl' + ${spec.id}}"
+				contenteditable="false">1</span>% <a class="muokkaa" rel="osc2lvl"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+				Oscillator 2 Synchronization: <span th:text="${spec.osc2sync}" th:id="@{'osc2sync' + ${spec.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="osc2sync"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+				</div></td>		
+				<!-- Väli -->
+				<!-- Vaikeasti kategorisoitavat tiedot tänne -->		
+				<!-- Väli -->
+				<td><button type="button" class="collapsible">Open Misc. Details</button>
+			<div class="content"><br>
+			Noise Level: <span th:text="${spec.noiselvl}"
+				th:id="@{'noiselvl' + ${spec.id}}" contenteditable="false">1</span> <a
+				class="muokkaa" rel="noiselvl" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+		Octave: <span th:text="${spec.oct}" th:id="@{'oct' + ${spec.id}}"
+				contenteditable="false">1</span> from starting octave<a class="muokkaa" rel="oct"
+				th:name="${spec.id}"><i class="far fa-edit"></i></a><br><br>
+			Number of Voices: <span th:text="${spec.voc}"
+				th:id="@{'voc' + ${spec.id}}" contenteditable="false">1</span> <a
+				class="muokkaa" rel="voc" th:name="${spec.id}"><i
+					class="far fa-edit"></i></a><br><br>
+				
+				</div></td>
+			<td sec:authorize="hasAuthority('ADMIN')"><a class="poista" th:href="@{'/delete/' + ${spec.id}}">&#215;</a></td>
+		</tr>
+	</table>
+
+	<!-- lähetetään lomake /add sivulle post-metodilla -->
+	<div class="filling">
+	<div class="formfancy">
+	<form th:action="@{/add}" method="post"><h2>Add Specifications</h2>
+		<table>
+			<tr>
+				<td>Name of Original Synth:<br><input class="form-control" type="text" name="name"
+					required /></td>
+			</tr>
+				<!-- Väli -->
+				<!-- Arpeggio tiedot tänne -->		
+				<!-- Väli -->
+			<tr><td><button type="button" class="collapsurvey">Open Arpeggio Settings</button>
+				<div class="content arp">Arpeggio Sequence Rate:<input class="form-control" type="text" name="arpseqrate"
+					required />Arpeggio Sequence Gate:
+				<input class="form-control" type="text" name="arpseqgate"
+					required />
+
+				Sequence Mode:
+				<select id="catlist" class="form-control" name="cat">
+						<option value="" disabled="disabled" selected="selected">Choose
+							category...</option>
+						<option th:each="category: ${categories}"
+							th:value="${category.categoryid}" th:text="${category.name}"></option>
+				</select>
+Arpeggio Sequence Octave:
+<input class="form-control" type="text" name="arpseqoct"
+					required />
+					Arpeggio Sequence Pattern:
+<input class="form-control" type="text" name="arpseqpat"
+					required />
+					Arpeggio Sequence Style:
+<input class="form-control" type="text" name="arpseqstl"
+					required />
+					</div></td>
+				
+			</tr>
+				<!-- Väli -->
+				<!-- Low Frequency Oscillator tiedot tänne -->		
+				<!-- Väli -->
+						<tr><td><button type="button" class="collapsurvey">Open LFO Settings</button>
+				<div class="content lfo">LFO 1 Wave:<input class="form-control" type="text" name="lfo1wave"
+					required />LFO 2 Wave:
+				<input class="form-control" type="text" name="lfo2wave"
+					required />
+
+LFO 1 Delay:
+<input class="form-control" type="text" name="lfo1delay"
+					required />
+					LFO 2 Delay:
+<input class="form-control" type="text" name="lfo2delay"
+					required />
+					LFO 1 Rate:
+<input class="form-control" type="text" name="lfo1rate"
+					required />
+									LFO 2 Rate:
+				<input class="form-control" type="text" name="lfo2rate"
+					required />
+					</div></td>
+				
+			</tr>
+				<!-- Väli -->
+				<!-- Normi Oscillator tiedot tänne -->		
+				<!-- Väli -->
+						<tr><td><button type="button" class="collapsurvey">Open Oscillator Settings</button>
+				<div class="content osc">Oscillator 1 Wave:<input class="form-control" type="text" name="osc1wave"
+					required />Oscillator 1 Pitch Modulation:
+				<input class="form-control" type="text" name="osc1ptchmod"
+					required />
+
+Oscillator 1 PWM:
+<input class="form-control" type="text" name="osc1pwm"
+					required />
+					Oscillator 2 Pitch Modulation:
+<input class="form-control" type="text" name="osc2ptchmod"
+					required />
+					Oscillator 2 Tone Modulation:
+<input class="form-control" type="text" name="osc2tonemod"
+					required />
+									Oscillator 2 Pitch:
+				<input class="form-control" type="text" name="osc2ptch"
+					required />
+									Oscillator 2 Volume Level:
+				<input class="form-control" type="text" name="osc2lvl"
+					required />
+									Oscillator 2 Synchronization:
+				<input class="form-control" type="text" name="osc2sync"
+					required />
+					</div></td>
+				
+			</tr>
+				<!-- Väli -->
+				<!-- Vaikeasti kategorisoitavat tiedot tänne -->		
+				<!-- Väli -->
+						<tr><td><button type="button" class="collapsurvey">Open Misc. Settings</button>
+				<div class="content misc">Noise Level:<input class="form-control" type="text" name="noiselvl"
+					required />Octave:
+				<input class="form-control" type="text" name="oct"
+					required />
+
+Number of Voices:
+<input class="form-control" type="text" name="voc"
+					required />
+					</div></td>
+				
+			</tr>
+			
+			
+
+		</table>
+		<p>
+			<input type="submit" value="Add Specification list" class="btn btn-success" />
+		</p>
+		
+	</form>
+</div>
+</div>
+	<script>
+	var coll = document.getElementsByClassName("collapsible");
+	var i;
+
+	for (i = 0; i < coll.length; i++) {
+	  coll[i].addEventListener("click", function() {
+	    this.classList.toggle("active");
+	    var content = this.nextElementSibling;
+	    if (content.style.maxHeight){
+	      content.style.maxHeight = null;
+	      content.style.height=700+"px";
+	    } else {
+	      content.style.maxHeight = 700 + "px";
+	      content.style.height=700+"px";
+	    } 
+	  });
+	}
+	var coll = document.getElementsByClassName("collapsurvey");
+	var i;
+
+	for (i = 0; i < coll.length; i++) {
+		  coll[i].addEventListener("click", function() {
+		    this.classList.toggle("active");
+		    var content = this.nextElementSibling;
+		    if (content.style.maxHeight){
+		      content.style.maxHeight = null;
+		    } else {
+		      content.style.maxHeight = content.scrollHeight + "px";
+		    }
+		  });
+		}
+	
+		$('.muokkaa').not('.spessu').click(
+				function() {
+					var asia = $(this).attr('rel');
+					var id = $(this).attr('name');
+					var value = $('#' + asia + id).attr('contenteditable');
+
+					if (value == "false") {
+						$("#" + asia + id).attr('contenteditable', 'true');
+						$("span").not("#" + asia + id).attr('contenteditable',
+								'false');
+						$(this).html('<i class="far fa-save"></i>');
+						$('.muokkaa').not(this).html(
+								'<i class="far fa-edit"></i>');
+					} else {
+						var arvo = $("#" + asia + id).text();
+						window.location.href = '/edit/' + id + '/' + asia + '/'
+								+ arvo;
+					}
+				});
+		$('.spessu').click(
+				function() {
+
+					var asia = $(this).attr('rel');
+					var id = $(this).attr('name');
+					var value = $(this).html();
+
+					if (value.indexOf("edit") > 0) {
+						$("#catlist" + id).css("display", "inline-block");
+						$("#category" + id).hide();
+						$(this).html('<i class="far fa-save"></i>');
+					} else {
+						var arvo = $("#catlist" + id).val();
+						if (arvo != "" && arvo != null) {
+							window.location.href = '/edit/' + id + '/' + asia
+									+ '/' + arvo;
+						}
+					}
+
+				});
+	</script>
+</body>
+</html>
